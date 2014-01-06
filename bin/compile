@@ -44,13 +44,13 @@ for BUILDPACK in $(cat $1/.buildpacks); do
     framework=$($dir/bin/detect $1)
 
     if [ $? == 0 ]; then
-      echo "-----> Previous environment vars"
-      env
       if [ -e $1/exported ]; then
         echo "-----> Found exported vars file from previous buildpack, loading"
         cat $1/exported
         . $1/exported
+        which lua
         command -v foo >/dev/null 2>&1 || echo "Lua not present in $PATH"
+        
       fi
       echo "=====> Detected Framework: $framework"
       
