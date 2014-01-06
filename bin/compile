@@ -48,9 +48,11 @@ for BUILDPACK in $(cat $1/.buildpacks); do
         echo "-----> Found exported vars file from previous buildpack, loading"
         cat $1/exported
         . $1/exported
+        echo "Looking for lua" 
         which lua
-        command -v foo >/dev/null 2>&1 || echo "Lua not present in $PATH"
-        
+        set +e
+        lua -v
+        set -e
       fi
       echo "=====> Detected Framework: $framework"
       
