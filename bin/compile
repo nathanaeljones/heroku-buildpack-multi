@@ -44,7 +44,15 @@ for BUILDPACK in $(cat $1/.buildpacks); do
     framework=$($dir/bin/detect $1)
 
     if [ $? == 0 ]; then
+      echo "-----> Previous environment vars"
+      env
+      if [ -e $1/exported ]; then
+        echo "-----> Found exported vars file from previous buildpack, loading"
+        cat $1/exported
+        . $1/exported
+      fi
       echo "=====> Detected Framework: $framework"
+      
       $dir/bin/compile $1 $2 $3
 
       if [ $? != 0 ]; then
@@ -53,10 +61,8 @@ for BUILDPACK in $(cat $1/.buildpacks); do
 
       # check if the buildpack left behind an environment for subsequent ones
       if [ -e $dir/export ]; then
-        echo "=====> Found exported vars file, loading:"
-        cat $dir/export
-        source $dir/export
-        echo "PATH is now =$PATH"
+        echo "=====> Exporting vars file"
+        cat $dir/export >> $1/exported
       fi
 
  
